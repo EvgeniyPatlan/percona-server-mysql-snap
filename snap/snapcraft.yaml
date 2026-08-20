@@ -1,0 +1,137 @@
+name: percona-server-mysql
+base: core26
+version: '8.4.10-10'
+summary: Percona Server for MySQL in a snap.
+description: |
+  Percona Server for MySQL is a free, fully compatible, enhanced and
+  open source drop-in replacement for any MySQL database. It provides
+  superior performance, scalability and instrumentation, including the
+  MyRocks (RocksDB) storage engine.
+title: Percona Server for MySQL
+contact: https://github.com/EvgeniyPatlan/percona-server-mysql-snap/issues
+issues: https://github.com/EvgeniyPatlan/percona-server-mysql-snap/issues
+source-code: https://github.com/EvgeniyPatlan/percona-server-mysql-snap
+website: https://www.percona.com/mysql/software/percona-server-for-mysql
+
+grade: stable
+confinement: strict
+license: Apache-2.0
+platforms:
+  amd64:
+  arm64:
+
+system-usernames:
+  snap_daemon: shared
+
+package-repositories:
+  - type: apt
+    url: https://repo.percona.com/ps-84-lts/apt
+    suites: [resolute]
+    components: [main]
+    key-id: 4D1BB29D63D98E422B2113B19334A25F8507EFA5
+  # Needed only because percona-server-server depends on
+  # percona-telemetry-agent; the agent is pruned below.
+  - type: apt
+    url: https://repo.percona.com/telemetry/apt
+    suites: [resolute]
+    components: [main]
+    key-id: 4D1BB29D63D98E422B2113B19334A25F8507EFA5
+
+hooks:
+  install:
+    plugs:
+      - network
+      - network-bind
+
+slots:
+  mysql-sockets:
+    interface: content
+    content: socket-directory
+    write:
+      - $SNAP_DATA/run
+
+apps:
+  mysqld:
+    command: bin/mysqld.sh
+    daemon: simple
+    plugs:
+      - network
+      - network-bind
+  mysql:
+    command: usr/bin/mysql -S $SNAP_DATA/run/mysqld.sock
+    plugs:
+      - network
+  mysqladmin:
+    command: usr/bin/mysqladmin -S $SNAP_DATA/run/mysqld.sock
+    plugs:
+      - network
+  mysqlcheck:
+    command: usr/bin/mysqlcheck -S $SNAP_DATA/run/mysqld.sock
+    plugs:
+      - network
+  mysqldump:
+    command: usr/bin/mysqldump -S $SNAP_DATA/run/mysqld.sock
+    plugs:
+      - network
+  mysqlimport:
+    command: usr/bin/mysqlimport -S $SNAP_DATA/run/mysqld.sock
+    plugs:
+      - network
+  mysqlshow:
+    command: usr/bin/mysqlshow -S $SNAP_DATA/run/mysqld.sock
+    plugs:
+      - network
+  mysqlslap:
+    command: usr/bin/mysqlslap -S $SNAP_DATA/run/mysqld.sock
+    plugs:
+      - network
+  ps-admin:
+    command: usr/bin/ps-admin -S $SNAP_DATA/run/mysqld.sock
+    plugs:
+      - network
+
+parts:
+  packages-deb:
+    plugin: nil
+    stage-packages:
+      - percona-server-server=8.4.10-10-1.resolute
+      - percona-server-client=8.4.10-10-1.resolute
+      - percona-server-rocksdb=8.4.10-10-1.resolute
+      - util-linux
+    prime:
+      # Percona telemetry agent (pulled in as a hard dependency; not shipped)
+      - -usr/bin/percona-telemetry-agent
+      - -etc/default/percona-telemetry-agent
+      - -etc/logrotate.d
+      - -usr/sbin/logrotate
+      - -lib/systemd
+      - -usr/lib/systemd
+      # Host-only integration files that make no sense inside a snap
+      - -etc/init.d
+      - -etc/apparmor.d
+      - -etc/cron.daily
+      # Debug binaries
+      - -usr/sbin/mysqld-debug
+      - -usr/lib/mysql/plugin/debug
+    organize:
+      usr/share/doc/percona-server-server/copyright: licenses/COPYRIGHT-percona-server-server
+      usr/share/doc/percona-server-client/copyright: licenses/COPYRIGHT-percona-server-client
+      usr/share/doc/percona-server-common/copyright: licenses/COPYRIGHT-percona-server-common
+      usr/share/doc/percona-server-rocksdb/copyright: licenses/COPYRIGHT-percona-server-rocksdb
+      usr/share/doc/util-linux/copyright: licenses/COPYRIGHT-util-linux
+  snap-license:
+    plugin: dump
+    source: .
+    source-type: local
+    stage:
+      - licenses/LICENSE-snap
+    organize:
+      LICENSE: licenses/LICENSE-snap
+  snap-scripts:
+    plugin: dump
+    source: snap/local
+    source-type: local
+    override-prime: |
+      craftctl default
+      sed -i 's/_NAME_/$SNAPCRAFT_PROJECT_NAME/g' bin/*.sh
+      sed -i 's/_NAME_/$SNAPCRAFT_PROJECT_NAME/g' etc/*.cnf
