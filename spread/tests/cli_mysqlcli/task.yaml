@@ -17,7 +17,7 @@ execute: |
   ${CMD} -e "CREATE DATABASE test_db;"
   ${CMD} -e "USE test_db; CREATE TABLE test_table (id INT PRIMARY KEY, name VARCHAR(50));"
   ${CMD} -e "INSERT INTO test_db.test_table (id, name) VALUES (1, 'test_name');"
-  RESULT=$(${CMD} -e "SELECT * FROM test_db.test_table WHERE id=1;" | grep test_name || true)
+  ${CMD} -e "SELECT * FROM test_db.test_table WHERE id=1;" | grep test_name
   ${CMD} -e "DROP DATABASE test_db;"
 
   echo "Testing SSL connection"

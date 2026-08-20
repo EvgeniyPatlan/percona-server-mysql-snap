@@ -68,4 +68,6 @@ snapcraft test --debug                  # open shell on failure
 
 This snap packaging is free software, distributed under the Apache Software
 License, version 2.0. See [LICENSE](LICENSE). Percona Server for MySQL is
-distributed under the GPLv2 license (see `licenses/` inside the snap).
+distributed under the GPLv2 license (see `licenses/` inside the snap). This
+repository's packaging is derived from
+[canonical/mysql-snap](https://github.com/canonical/mysql-snap) (Apache-2.0).
