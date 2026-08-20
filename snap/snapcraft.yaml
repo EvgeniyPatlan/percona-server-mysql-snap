@@ -23,6 +23,10 @@ platforms:
 system-usernames:
   snap_daemon: shared
 
+layout:
+  /usr/lib/mysql:
+    symlink: $SNAP/usr/lib/mysql
+
 package-repositories:
   - type: apt
     url: https://repo.percona.com/ps-84-lts/apt
