@@ -18,7 +18,7 @@ Tracks:
 ## Installing the Snap
 
 ```bash
-sudo snap install percona-server-mysql --channel 8.4/edge
+sudo snap install percona-server-mysql --channel 9.7/edge
 ```
 
 The install hook initializes the data directory and configures the

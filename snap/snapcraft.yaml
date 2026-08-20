@@ -1,6 +1,6 @@
 name: percona-server-mysql
 base: core26
-version: '8.4.10-10'
+version: '9.7.1-1'
 summary: Percona Server for MySQL in a snap.
 description: |
   Percona Server for MySQL is a free, fully compatible, enhanced and
@@ -29,7 +29,7 @@ layout:
 
 package-repositories:
   - type: apt
-    url: https://repo.percona.com/ps-84-lts/apt
+    url: https://repo.percona.com/ps-97-lts/apt
     suites: [resolute]
     components: [main]
     key-id: 4D1BB29D63D98E422B2113B19334A25F8507EFA5
@@ -98,9 +98,9 @@ parts:
   packages-deb:
     plugin: nil
     stage-packages:
-      - percona-server-server=8.4.10-10-1.resolute
-      - percona-server-client=8.4.10-10-1.resolute
-      - percona-server-rocksdb=8.4.10-10-1.resolute
+      - percona-server-server=9.7.1-1-1.resolute
+      - percona-server-client=9.7.1-1-1.resolute
+      - percona-server-rocksdb=9.7.1-1-1.resolute
       - util-linux
     prime:
       # Percona telemetry agent (pulled in as a hard dependency; not shipped)
@@ -147,6 +147,9 @@ parts:
       usr/share/doc/percona-server-common/copyright: licenses/COPYRIGHT-percona-server-common
       usr/share/doc/percona-server-rocksdb/copyright: licenses/COPYRIGHT-percona-server-rocksdb
       usr/share/doc/util-linux/copyright: licenses/COPYRIGHT-util-linux
+      usr/share/doc/percona-server-server-core/copyright: licenses/COPYRIGHT-percona-server-server-core
+      usr/share/doc/percona-server-client-core/copyright: licenses/COPYRIGHT-percona-server-client-core
+      usr/share/doc/percona-server-client-plugins/copyright: licenses/COPYRIGHT-percona-server-client-plugins
   snap-license:
     plugin: dump
     source: .

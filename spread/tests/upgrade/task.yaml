@@ -4,7 +4,7 @@ summary: Percona Server upgrade tests
 manual: true
 
 prepare: |
-  snap install percona-server-mysql --channel 8.4/edge
+  snap install percona-server-mysql --channel 9.7/edge
   until [ -S /var/snap/percona-server-mysql/current/run/mysqld.sock ]; do
     echo "Waiting for mysqld.sock"
     sleep 1
