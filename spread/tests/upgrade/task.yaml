@@ -1,6 +1,6 @@
 summary: Percona Server upgrade tests
 
-# TODO(release): remove `manual` once percona-server-mysql is published to 8.4/edge
+# TODO(release): remove `manual` once percona-server-mysql is published to 9.7/edge
 manual: true
 
 prepare: |
