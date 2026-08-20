@@ -113,6 +113,30 @@ parts:
       # Debug binaries
       - -usr/sbin/mysqld-debug
       - -usr/lib/mysql/plugin/debug
+      # Mute lint by removing unnecessary libs flagged as unused by the
+      # snapcraft library linter (glibc compat stubs, NSS modules, and
+      # util-linux/mysql transitive deps not dlopen'd or linked at runtime)
+      - -usr/lib/*/libBrokenLocale.so*
+      - -usr/lib/*/libanl.so*
+      - -usr/lib/*/libbrotlienc.so*
+      - -usr/lib/*/libc_malloc_debug.so*
+      - -usr/lib/*/libdl.so*
+      - -usr/lib/*/libdrop_ambient.so*
+      - -usr/lib/*/libmemusage.so*
+      - -usr/lib/*/libmvec.so*
+      - -usr/lib/*/libnsl.so*
+      - -usr/lib/*/libnss_compat.so*
+      - -usr/lib/*/libnss_dns.so*
+      - -usr/lib/*/libnss_files.so*
+      - -usr/lib/*/libnss_hesiod.so*
+      - -usr/lib/*/libpamc.so*
+      - -usr/lib/*/libpcprofile.so*
+      - -usr/lib/*/libpopt.so*
+      - -usr/lib/*/libpthread.so*
+      - -usr/lib/*/librt.so*
+      - -usr/lib/*/libthread_db.so*
+      - -usr/lib/*/libtic.so*
+      - -usr/lib/*/libutil.so*
     organize:
       usr/share/doc/percona-server-server/copyright: licenses/COPYRIGHT-percona-server-server
       usr/share/doc/percona-server-client/copyright: licenses/COPYRIGHT-percona-server-client
