@@ -141,6 +141,63 @@ CRAFT_ARTIFACT=$(pwd)/percona-server-mysql_<version>_amd64.snap spread -v
 (`spread` from `go install github.com/canonical/spread/cmd/spread@latest`;
 needs the `lxd` snap.)
 
+## Updating to a new Percona release
+
+`scripts/bump-version.sh` checks every exact-pinned package in
+`snap/snapcraft.yaml` against the apt indexes declared under
+`package-repositories`, and bumps any pin (and the top-level `version:`
+field, derived from the `percona-server-server` pin) that is out of date.
+
+Each track declares two apt repositories: the track's own Percona repo
+(e.g. `repo.percona.com/ps-84-lts/apt` for `8.4/edge`), which is where
+`percona-server-server`, `percona-server-client`, and
+`percona-server-rocksdb` are all pinned from, plus
+`repo.percona.com/telemetry/apt`, needed only because
+`percona-server-server` depends on `percona-telemetry-agent` at the apt
+level (the agent itself is pruned from the packaged snap and is never
+exact-pinned, so it is never a bump target).
+
+### Automated
+
+The `Update check` workflow (`.github/workflows/update-check.yaml`) runs
+weekly and, for each `*/edge` branch (`8.4/edge`, `9.7/edge`), runs the
+same script and opens a pull request per branch that has an available
+update. The PR:
+
+- touches only `snap/snapcraft.yaml`, with the pin diff as the commit;
+- contains the script's summary table (old/new version per package) in its
+  description;
+- is verified the same way any other PR is: CI (`Tests`) builds the snap for
+  `amd64` and `arm64` and runs the full spread suite against it. Merging the
+  PR into its track branch produces the downloadable `snap-packages`
+  artifact described above.
+
+To trigger an immediate check instead of waiting for the weekly run, start
+the `Update check` workflow manually from the Actions tab (`workflow_dispatch`,
+optionally scoped to one branch via the `branch` input).
+
+If a bump PR is closed without merging, its `bump/<track>-<version>` branch
+is left behind and that exact version is skipped on every future run until
+the branch is deleted (or a newer version ships) — delete the branch if you
+want the check retried for that version.
+
+### Manual
+
+```
+./scripts/bump-version.sh
+git diff
+```
+
+Review the diff, then commit and push as usual.
+
+### Scope
+
+The script only updates pins within the current track (`8.4` or `9.7`). A
+new Percona major version means a new track/branch and, per the Percona
+publishing model for Percona Server for MySQL, a new apt repository path
+(`repo.percona.com/ps-<NN>-lts/apt`) — that's a manual, one-time setup, not
+something this script does.
+
 ## License
 
 The snap packaging is Apache-2.0. Upstream component licenses (Percona
