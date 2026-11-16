@@ -1,6 +1,6 @@
 name: percona-server-mysql
 base: core26
-version: '9.7.1-1'
+version: '9.7.2-3'
 summary: Percona Server for MySQL in a snap.
 description: |
   Percona Server for MySQL is a free, fully compatible, enhanced and
@@ -98,9 +98,9 @@ parts:
   packages-deb:
     plugin: nil
     stage-packages:
-      - percona-server-server=9.7.1-1-1.resolute
-      - percona-server-client=9.7.1-1-1.resolute
-      - percona-server-rocksdb=9.7.1-1-1.resolute
+      - percona-server-server=9.7.2-3-1.resolute
+      - percona-server-client=9.7.2-3-1.resolute
+      - percona-server-rocksdb=9.7.2-3-1.resolute
       - util-linux
     prime:
       # Percona telemetry agent (pulled in as a hard dependency; not shipped)
